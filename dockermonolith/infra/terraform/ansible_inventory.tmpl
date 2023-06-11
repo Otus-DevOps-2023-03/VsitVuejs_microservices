@@ -1,4 +1,4 @@
-[linux]
+[docker]
 %{ for index, hostname in hostnames ~}
 ${hostname} ansible_host=${ansible_hosts[index]}
 %{ endfor ~}

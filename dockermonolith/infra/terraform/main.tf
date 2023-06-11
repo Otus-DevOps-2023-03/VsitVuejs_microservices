@@ -14,7 +14,7 @@ terraform {
 }
 
 resource "yandex_compute_instance" "app" {
-  name        = "docker-app"
+  name        = "docker-app-${count.index}"
   platform_id = "standard-v2"
   count = var.count_ci
 
@@ -56,8 +56,8 @@ resource "yandex_compute_instance" "app" {
 resource "local_file" "AnsibleInventory" {
  content = templatefile("ansible_inventory.tmpl",
    {
-    hostnames         = azurerm_virtual_machine.vm.*.name,
-    ansible_hosts     = azurerm_network_interface.vm.*.private_ip_address,
+    hostnames         = yandex_compute_instance.app.*.name,
+    ansible_hosts     = yandex_compute_instance.app[*].network_interface.0.nat_ip_address,
    }
  )
  filename = "dynamic_inventory"
