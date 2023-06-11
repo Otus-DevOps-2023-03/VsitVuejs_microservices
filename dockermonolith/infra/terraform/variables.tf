@@ -26,3 +26,8 @@ variable app_disk_image {
   description = "Disk image for reddit app"
   default     = "reddit-app-base"
 }
+variable count_ci {
+  description = "count compute instance"
+  # Значение по умолчанию
+  default = "1"
+}

@@ -1,0 +1,12 @@
+---
+- hosts: docker
+  become: true
+  tasks:
+    - name: start docker container
+      docker_container:
+        name: reddit_app
+        state: started
+        image: "vsit/otus-reddit:1.0"
+        pull: true
+        ports:
+          - "9292:9292"

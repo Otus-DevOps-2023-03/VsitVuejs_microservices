@@ -16,6 +16,7 @@ terraform {
 resource "yandex_compute_instance" "app" {
   name        = "docker-app"
   platform_id = "standard-v2"
+  count = var.count_ci
 
   labels = {
     tags = "docker-app"
@@ -28,6 +29,7 @@ resource "yandex_compute_instance" "app" {
 
   boot_disk {
     initialize_params {
+      size = 15
       image_id = var.app_disk_image
     }
   }
@@ -49,4 +51,14 @@ resource "yandex_compute_instance" "app" {
     # путь до приватного ключа
     private_key = file(var.private_key_path)
   }
+}
+
+resource "local_file" "AnsibleInventory" {
+ content = templatefile("ansible_inventory.tmpl",
+   {
+    hostnames         = azurerm_virtual_machine.vm.*.name,
+    ansible_hosts     = azurerm_network_interface.vm.*.private_ip_address,
+   }
+ )
+ filename = "dynamic_inventory"
 }
