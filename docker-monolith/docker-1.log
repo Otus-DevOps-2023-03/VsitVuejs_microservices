@@ -3,5 +3,6 @@ user/ubuntu-tmp-file   latest    cd2d3fdf4d76   4 seconds ago   63.2MB
 ubuntu                 18.04     f9a80a55f492   10 days ago     63.2MB
 hello-world            latest    9c7a54a9a43c   5 weeks ago     13.3kB
 
+
 1) в образе содержатся настройки и слои
 2) в контейнере есть также настройки сети, хоста, volums и информация о запущенных процессах
