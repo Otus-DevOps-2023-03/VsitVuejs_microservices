@@ -1,0 +1,17 @@
+.idea/
+.git/
+variables.json
+*.tfstate.*.*
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfvars
+.terraform/
+versions.tf
+*.retry
+jdauphant.nginx
+.vagrant/
+*.pyc
+.molecule
+.cache
+.pytest_cache
