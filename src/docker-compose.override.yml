@@ -3,11 +3,11 @@ services:
   ui:
     command: puma --debug -w 2
     volumes:
-      - ./ui:/app
+      - ./ui:/app:rw
   post:
     volumes:
-      - ./post-py:/app
+      - ./post-py:/app:rw
   comment:
     command: puma --debug -w 2
     volumes:
-      - ./comment:/app
+      - ./comment:/app:rw
