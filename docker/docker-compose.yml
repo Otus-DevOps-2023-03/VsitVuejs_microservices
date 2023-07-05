@@ -1,0 +1,42 @@
+version: '3.3'
+services:
+  post_db:
+    image: mongo:3.2
+    volumes:
+      - post_db:/data/db
+    networks:
+      - back-net
+  ui:
+    image: ${USERNAME}/ui:${VERSION}
+    ports:
+      - ${PORT_UI}:${PORT_UI}/tcp
+    networks:
+      - front-net
+  post:
+    image: ${USERNAME}/post:${VERSION}
+    networks:
+      - back-net
+      - front-net
+  comment:
+    image: ${USERNAME}/comment:${VERSION}
+    networks:
+      - back-net
+      - front-net
+  prometheus:
+    image: ${USERNAME}/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    command: # Передаем доп параметры в командной строке
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+
+volumes:
+  post_db:
+  prometheus_data:
+
+networks:
+  back-net:
+  front-net:
