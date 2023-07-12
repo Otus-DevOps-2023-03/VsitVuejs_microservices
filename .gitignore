@@ -16,3 +16,5 @@ jdauphant.nginx
 .cache
 .pytest_cache
 .env
+web.yml
+gen-pass.py
