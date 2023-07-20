@@ -3,7 +3,7 @@ services:
   zipkin:
     image: openzipkin/zipkin:2.21.0
     ports:
-      - "127.0.0.1:9411:9411"
+      - "9411:9411"
     networks:
       - front-net
       - back-net
@@ -11,8 +11,8 @@ services:
   fluentd:
     image: ${USERNAME}/fluentd
     ports:
-      - "127.0.0.1:24224:24224"
-      - "127.0.0.1:24224:24224/udp"
+      - "24224:24224"
+      - "24224:24224/udp"
 
   elasticsearch:
     image: elasticsearch:7.4.0
@@ -24,12 +24,12 @@ services:
     expose:
       - 9200
     ports:
-      - "127.0.0.1:9200:9200"
+      - "9200:9200"
 
   kibana:
     image: kibana:7.4.0
     ports:
-      - "127.0.0.1:5601:5601"
+      - "5601:5601"
 
 networks:
   back-net:

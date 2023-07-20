@@ -9,7 +9,7 @@ services:
   ui:
     image: ${USERNAME}/ui:${VERSION}
     ports:
-      - 127.0.0.1:${PORT_UI}:${PORT_UI}/tcp
+      - ${PORT_UI}:${PORT_UI}/tcp
     networks:
       - front-net
     logging:
@@ -39,7 +39,7 @@ services:
   prometheus:
     image: ${USERNAME}/prometheus
     ports:
-      - '127.0.0.1:9090:9090'
+      - '9090:9090'
     volumes:
       - prometheus_data:/prometheus
     networks:
