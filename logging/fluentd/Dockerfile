@@ -1,6 +1,7 @@
-FROM fluent/fluentd:v0.12
-RUN gem install faraday-net_http -v 2.1.0
-RUN gem install faraday -v 1.10.3
-RUN gem install fluent-plugin-elasticsearch --no-rdoc --no-ri --version 1.9.5
-RUN gem install fluent-plugin-grok-parser --no-rdoc --no-ri --version 1.0.0
+FROM fluent/fluentd:v1.14.0-1.0
+USER root
+RUN gem uninstall -I elasticsearch && gem install elasticsearch -v 7.17.1
+RUN gem install fluent-plugin-elasticsearch --no-document --version 5.2.3
+RUN gem install fluent-plugin-grok-parser --no-document --version 2.6.2
+USER fluent
 ADD fluent.conf /fluentd/etc

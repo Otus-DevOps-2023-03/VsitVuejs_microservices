@@ -9,7 +9,7 @@ services:
   ui:
     image: ${USERNAME}/ui:${VERSION}
     ports:
-      - ${PORT_UI}:${PORT_UI}/tcp
+      - 127.0.0.1:${PORT_UI}:${PORT_UI}/tcp
     networks:
       - front-net
   post:
@@ -17,6 +17,11 @@ services:
     networks:
       - back-net
       - front-net
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.post
   comment:
     image: ${USERNAME}/comment:${VERSION}
     networks:
@@ -25,7 +30,7 @@ services:
   prometheus:
     image: ${USERNAME}/prometheus
     ports:
-      - '9090:9090'
+      - '127.0.0.1:9090:9090'
     volumes:
       - prometheus_data:/prometheus
     networks:

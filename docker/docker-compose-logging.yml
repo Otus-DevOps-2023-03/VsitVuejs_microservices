@@ -3,8 +3,8 @@ services:
   fluentd:
     image: ${USERNAME}/fluentd
     ports:
-      - "24224:24224"
-      - "24224:24224/udp"
+      - "127.0.0.1:24224:24224"
+      - "127.0.0.1:24224:24224/udp"
 
   elasticsearch:
     image: elasticsearch:7.4.0
@@ -16,9 +16,9 @@ services:
     expose:
       - 9200
     ports:
-      - "9200:9200"
+      - "127.0.0.1:9200:9200"
 
   kibana:
     image: kibana:7.4.0
     ports:
-      - "5601:5601"
+      - "127.0.0.1:5601:5601"
