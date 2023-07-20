@@ -12,6 +12,11 @@ services:
       - 127.0.0.1:${PORT_UI}:${PORT_UI}/tcp
     networks:
       - front-net
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.ui
   post:
     image: ${USERNAME}/post:${VERSION}
     networks:
