@@ -17,6 +17,8 @@ services:
       options:
         fluentd-address: localhost:24224
         tag: service.ui
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   post:
     image: ${USERNAME}/post:${VERSION}
     networks:
@@ -27,6 +29,8 @@ services:
       options:
         fluentd-address: localhost:24224
         tag: service.post
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   comment:
     image: ${USERNAME}/comment:${VERSION}
     networks:
