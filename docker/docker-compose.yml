@@ -12,11 +12,25 @@ services:
       - ${PORT_UI}:${PORT_UI}/tcp
     networks:
       - front-net
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.ui
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   post:
     image: ${USERNAME}/post:${VERSION}
     networks:
       - back-net
       - front-net
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.post
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   comment:
     image: ${USERNAME}/comment:${VERSION}
     networks:
