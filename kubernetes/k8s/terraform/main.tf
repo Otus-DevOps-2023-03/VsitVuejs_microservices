@@ -100,6 +100,6 @@ resource "yandex_compute_instance" "worker" {
   }
 
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -T 300 -i '${self.network_interface.0.nat_ip_address},' --extra-vars 'private_ip=${self.network_interface.0.ip_address} hostname=${self.name} public_ip=${self.network_interface.0.nat_ip_address}' --private-key ${var.private_key_path} ../ansible/worker-playbook.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -T 300 -i '${self.network_interface.0.nat_ip_address},' --extra-vars 'private_ip=${self.network_interface.0.ip_address} hostname=${self.name} public_ip=${self.network_interface.0.nat_ip_address}' --private-key ${var.private_key_path} ../ansible/node-playbook.yml"
   }
 }
