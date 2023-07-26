@@ -1,6 +1,9 @@
 ---
 - hosts: all
-  remote_user: admin
+  vars:
+    CRIO_VERSION: "1.24"
+    OS: "Debian_11"
+  remote_user: debian
   become: true
   tasks:
   - name: Install packages that allow apt to be used over HTTPS
@@ -27,42 +30,54 @@
       repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
       state: present
 
-  - name: Install docker and its dependecies
+  - name: Add CRIO repos
+    shell: |
+      echo "deb [trusted=yes] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ OS }}/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+      echo "deb [trusted=yes] http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ CRIO_VERSION }}/{{ OS }}/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:{{ CRIO_VERSION }}.list
+      curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ CRIO_VERSION }}/{{ OS }}/Release.key | apt-key add -
+      curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ OS }}/Release.key | apt-key add -
+
+  - name: Update cache again
+    apt:
+      update_cache: yes
+    register: task_result
+    until: task_result is success
+    retries: 20
+    delay: 2
+
+  - name: Prerequiste for using cri-o with Kubernetes
+    shell: |
+      modprobe overlay
+      modprobe br_netfilter
+      cat > /etc/sysctl.d/99-kubernetes-cri.conf <<EOF
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.ipv4.ip_forward                 = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      EOF
+      sysctl --system
+
+  - name: Install CRIO and its dependecies
     apt:
       name: "{{ packages }}"
       state: present
-      update_cache: yes
+    register: task_result
+    until: task_result is success
+    retries: 20
+    delay: 2
     vars:
       packages:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
+        - cri-o
+        - cri-tools
+        - cri-o-runc
     notify:
-      - docker status
+      - crio status
 
-  - name: Creating /etc/docker/daemon.json file with optimal configs
-    copy:
-      dest: "/etc/docker/daemon.json"
-      content: |
-        {
-          "exec-opts": ["native.cgroupdriver=systemd"],
-          "log-driver": "json-file",
-          "log-opts": {
-            "max-size": "100m"
-          },
-          "storage-driver": "overlay2"
-        }
-
-  - name: Restart docker
-    service:
-      name: docker
-      daemon_reload: yes
+  - name: Restart CRIO
+    systemd:
+      name: crio
       state: restarted
-
-  - name: Add aws default user to docker group
-    user:
-      name: admin
-      group: docker
+      enabled: yes
+      daemon_reload: yes
 
 # Disabling swap for kubelet to work
   - name: Remove swapfile from /etc/fstab
@@ -112,15 +127,15 @@
     command: "{{ item }}"
     with_items:
      - systemctl stop kubelet
-     - kubeadm init --apiserver-advertise-address {{ private_ip }} --apiserver-cert-extra-sans {{ public_ip }} --node-name {{ hostname }} --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors="NumCPU,Mem"
+     - kubeadm init --apiserver-cert-extra-sans={{ public_ip }} --control-plane-endpoint={{ public_ip }} --pod-network-cidr=10.244.0.0/16
 
 # Setup kubeconfig file for admin
   - name: Setup kubeconfig for admin user
     command: "{{ item }}"
     with_items:
-     - mkdir -p /home/admin/.kube
-     - cp -i /etc/kubernetes/admin.conf /home/admin/.kube/config
-     - chown admin:admin /home/admin/.kube/config
+     - mkdir -p /home/debian/.kube
+     - cp -i /etc/kubernetes/admin.conf /home/debian/.kube/config
+     - chown debian:debian /home/debian/.kube/config
 
 # Setup networking provider and network policy engine
   - name: Install flannel pod network
@@ -137,5 +152,5 @@
 
 # Setup handler for checking Docker daemon
   handlers:
-    - name: docker status
-      service: name=docker state=started
+    - name: crio status
+      service: name=crio state=started
