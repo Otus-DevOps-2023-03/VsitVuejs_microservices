@@ -8,9 +8,9 @@ metadata:
     component: post
 spec:
   ports:
-  - port: 9292
+  - port: 5000
     protocol: TCP
-    targetPort: 9292
+    targetPort: 5000
   selector:
     app: reddit
     component: post
