@@ -18,3 +18,4 @@ jdauphant.nginx
 .env
 web.yml
 gen-pass.py
+join-command
