@@ -17,9 +17,9 @@ spec:
     - podSelector:
         matchLabels:
           app: reddit
-          component: comment234
+          component: comment
   - from:
       - podSelector:
           matchLabels:
             app: reddit
-            component: post123
+            component: post
