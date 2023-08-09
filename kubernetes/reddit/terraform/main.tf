@@ -75,7 +75,7 @@ resource "yandex_kubernetes_node_group" "kuber-node-group" {
     }
 
     resources {
-      memory = 2
+      memory = 8
       cores  = 2
     }
 
