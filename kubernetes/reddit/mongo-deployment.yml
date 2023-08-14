@@ -31,5 +31,6 @@ spec:
           mountPath: /data/db
       volumes:
       - name: mongo-persistent-storage
+#      - name: mongo-gce-pd-storage
         persistentVolumeClaim:
           claimName: mongo-pvc
