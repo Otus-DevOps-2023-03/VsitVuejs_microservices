@@ -75,13 +75,13 @@ resource "yandex_kubernetes_node_group" "kuber-node-group" {
     }
 
     resources {
-      memory = 8
-      cores  = 2
+      memory = 24
+      cores  = 8
     }
 
     boot_disk {
       type = "network-ssd"
-      size = 30
+      size = 32
     }
 
     scheduling_policy {

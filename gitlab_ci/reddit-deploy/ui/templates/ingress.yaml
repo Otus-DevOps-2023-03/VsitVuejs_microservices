@@ -1,0 +1,27 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "comment.fullname" . }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+#    nginx.ingress.kubernetes.io/auth-type: basic
+#    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+#    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - user'
+#  annotations:
+#    kubernetes.io/ingress.allow-http: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.ingress.host | default .Release.Name }}
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ template "comment.fullname" . }}
+              port:
+                number: {{ .Values.service.externalPort }}
+#  tls:
+#  - secretName: ui-ingress
