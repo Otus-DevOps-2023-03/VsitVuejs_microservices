@@ -1,5 +1,5 @@
 provider "yandex" {
-  service_account_key_file = var.service_account_key_file
+  token                    = var.yc_token
   cloud_id                 = var.cloud_id
   folder_id                = var.folder_id
   zone                     = var.zone
@@ -75,13 +75,13 @@ resource "yandex_kubernetes_node_group" "kuber-node-group" {
     }
 
     resources {
-      memory = 8
-      cores  = 2
+      memory = 24
+      cores  = 8
     }
 
     boot_disk {
       type = "network-ssd"
-      size = 30
+      size = 32
     }
 
     scheduling_policy {

@@ -19,3 +19,5 @@ jdauphant.nginx
 web.yml
 gen-pass.py
 join-command
+*.lock
+*.tgz
